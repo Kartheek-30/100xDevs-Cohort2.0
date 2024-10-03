@@ -16,6 +16,78 @@
   Once you've implemented the logic, test your code by running
 */
 
-class Calculator {}
+class Calculator {
+  constructor(){
+    this.result = 0;
+  }
+  add(num1){
+    this.result+= num1;
+  }
+  subtract(num1){
+    this.result -= num1;
+  }
+  multiply(num1){
+    this.result *= num1;
+  }
+  divide(num1){
+    if(num1 === 0){
+      throw new Error("Cannot divide with zero");
+      
+    }
+    this.result /= num1;
+  }
+
+  getResult(){
+    return this.result;
+  }
+  clear(){
+    this.result = 0;
+  }
+  calculate(str){
+    try {
+      const cleanExpr = str.replace(/\s+/g, '');
+
+      if(/[^-()\d/*+.]/.test(cleanExpr)){
+        throw new Error("Invalid Input");
+      }
+
+      this.result = this.evaluate(str);
+  } catch (error) {
+      throw new Error("Invalid input: " + error.message);
+  }
+}
+evaluate(str){
+  let currentNum = '';
+  let total = 0;
+  let currentOperator = '+';
+  let i = 0;
+
+  while(i < str.length) {
+    let char = str[i];
+
+    if(/\d|\./.test(char)){
+      currentNum += char;
+    }
+    if (/[-+*/()]/.test(char) || i === str.length - 1) {
+      if (currentNum) {
+        let num = parseFloat(currentNum);
+
+        if (currentOperator === '+') total += num;
+        if (currentOperator === '-') total -= num;
+        if (currentOperator === '*') total *= num;
+        if (currentOperator === '/') total /= num;
+
+        currentNum = '';
+      }
+
+      if (/[-+*/]/.test(char)) currentOperator = char;
+    }
+
+    i++;
+  }
+
+  return total;
+  }
+}
 
 module.exports = Calculator;

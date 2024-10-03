@@ -9,5 +9,18 @@ There is no automated test for this one, this is more for you to understand time
 */
 
 function calculateTime(n) {
-    return 0.01;
+    const currentDate = new Date();
+    let startTime = Date.now();
+    let add = 0;
+    for(let i = 1; i <= n; i++){
+        add += i;
+    }
+    console.log(add);
+    let endTime = Date.now();
+    const timeTaken = endTime - startTime;
+    const result = "Time taken for adding 1 to " + n + " numbers is " + timeTaken + " milliseconds";
+    return result;
 }
+
+const time = calculateTime(1000000000);
+console.log(time);
