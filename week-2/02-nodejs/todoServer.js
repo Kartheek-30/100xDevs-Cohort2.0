@@ -45,5 +45,74 @@
   const app = express();
   
   app.use(bodyParser.json());
+  let todoList = [];
+  let id = 1;
+
+  app.get('/todos', (req, res) => {
+    res.status(200).json(todoList);
+  })
   
+  app.get('/todos/:id', (req, res) => {
+      const taskId = parseInt(req.params.id, 10);
+      const task = todoList.find(t => t.id === taskId)
+  
+      if(task){
+          res.status(200).json(task);
+      } else {
+          res.status(404).json({msg: "Task not found"})
+      }
+  })
+  
+  app.post("/todos", (req, res) => {
+      const {title, description} = req.body;
+  
+      if(!title || !description){
+          return res.status(404).json({msg: "Invalid data"})
+      }
+  
+      const newTask = {
+          id: id++,
+          title,
+          completed: false,
+          description
+      };
+  
+      todoList.push(newTask);
+      res.status(201).json(newTask);
+  })
+  
+  app.put("/todos/:id", (req, res) => {
+      const taskId = parseInt(req.params.id, 10);
+      const taskIndex = todoList.findIndex(t => t.id === taskId);
+      const {title, completed, description} = req.body;
+  
+      if (taskIndex === -1) {
+          return res.status(404).json({ msg: "Task not found" });
+      }
+  
+      if(completed !== undefined && typeof completed !== 'boolean'){
+          res.status(400).json({msg: "Invalid body 'completed' must be a boolean"})
+      }
+      todoList[taskIndex] = {
+          id: taskId,
+          title: title || todoList[taskIndex].title,
+          completed: completed !== undefined ? completed : todoList[taskIndex].completed,
+          description: description || todoList[taskIndex].description
+      };
+  
+      res.status(200).json(todoList[taskIndex]);
+  
+  });
+  
+  app.delete("/todos/:id", (req, res) => {
+      const taskId = parseInt(req.params.id, 10);
+      const task = todoList.find(t => t.id === taskId);
+  
+      if(task !== -1) {
+          todoList.splice(task, 1);
+          res.status(200).json({msg: "Given task is deleted"});
+      } else {
+          res.status(404).json({msg: "Task not found"})
+      }
+  });
   module.exports = app;
