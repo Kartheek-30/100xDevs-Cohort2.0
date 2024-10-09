@@ -106,7 +106,7 @@
   
   app.delete("/todos/:id", (req, res) => {
       const taskId = parseInt(req.params.id, 10);
-      const task = todoList.find(t => t.id === taskId);
+      const task = todoList.findIndex(t => t.id === taskId);
   
       if(task !== -1) {
           todoList.splice(task, 1);
