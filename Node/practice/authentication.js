@@ -65,7 +65,7 @@ app.post("/signin", (req, res) => {
 
     if(!userExists(username, password)) {
         return res.status(403).json({
-            msg: "User doesn't exists",
+            msg: "User doesn't exist",
         });
     }
 
@@ -80,7 +80,16 @@ app.get("/users", (req, res) => {
     try {
         const decoded = jwt.verify(token, jwtPassword);
         const username = decoded.username;
-
+        // return list of users other than this username
+        res.json({
+            users: ALL_USERS.filter((value) => {
+                if(value.username == username) {
+                    return false;
+                } else {
+                    return true;
+                }
+            })
+        });
     } catch (err) {
         return res.status(403).json({
             msg: "Invalid token",
