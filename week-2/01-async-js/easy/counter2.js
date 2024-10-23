@@ -1,14 +1,13 @@
 function counter(){
     let count = 1;
-    function incCounter(){
+    setTimeout(function run() {
         console.log(count++);
-
-        setTimeout(incCounter, 1000);        
-    }
-    incCounter();
+        setTimeout(run, 1000);
+    }, 1000);
 }
 
-//counter();
+counter();
+
 
 
 // Printing current seconds
@@ -21,4 +20,4 @@ function currentSeconds(){
     setTimeout(currentSeconds, 1000);
 }
 
-currentSeconds();
+//currentSeconds();
