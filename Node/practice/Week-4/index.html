@@ -1,0 +1,69 @@
+<html>
+    <script>
+        function populateSum(){
+            const element = document.getElementById("finalSum");
+            let firstNum = document.getElementById("firstNum").value;
+            let secondNum = document.getElementById("secondNum").value;
+            // const sum = parseInt(firstNum) + parseInt(secondNum);
+
+            fetch("http://localhost:3000/sum?a="+ firstNum +"&b=" + secondNum)
+                .then((response) => {
+                    //console.log(response);
+                    response.text()
+                        .then((ans) => {
+                            console.log(ans);
+                            element.innerHTML = ans;
+                        })
+                });
+            // console.log(sum);
+        }
+
+        let timeout;
+        function debouncedPopulateSum() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                populateSum2();
+            }, 100);
+        }
+
+        async function populateSum2() {
+            const element = document.getElementById("finalSum");
+            let firstNum = document.getElementById("firstNum").value;
+            let secondNum = document.getElementById("secondNum").value;
+
+            const response = await fetch("http://localhost:3000/sum?a="+ firstNum +"&b=" + secondNum);
+            const ans = await response.text();
+            element.innerHTML = ans;
+        }
+
+        async function calculateInterest() {
+            let amount = document.getElementById("amount").value;
+            let rate = document.getElementById("rate").value;
+            let year = document.getElementById("year").value;
+            let total = document.getElementById("total");
+
+            const response = await fetch("http://localhost:3000/interest?principal=" + amount + "&rate=" + rate + "&time=" + year);
+            const ans = await response.json();
+            total.innerHTML =`
+                <div>
+                    <h4>Interest calculation result</h4>
+                    <p><strong>Total amount: </strong>${ans.total}</p>
+                    <p><strong>Interest earned: </strong>${ans.interest}</p>
+                </div>`;
+        }
+    </script>
+    <body>
+        <input oninput="debouncedPopulateSum()" type="text" placeholder="Enter first number" id="firstNum"/> <br/><br/>
+        <input oninput="debouncedPopulateSum()" type="text" placeholder="Enter second number" id="secondNum"/> <br/><br/>
+        <!--<button onclick="populateSum2()">Calculate Sum</button> <br/><br/> -->
+        <div id="finalSum"></div> <br/>
+
+        <div>
+            <input type="text" placeholder="Enter Amount" id="amount"/> <br/><br/>
+            <input type="text" placeholder="Enter rate of interest" id="rate"/> <br/><br/>
+            <input type="text" placeholder="Enter number of years" id="year"/> <br/><br/>
+            <button onclick="calculateInterest()">Calculate Total amount</button> <br/><br/>
+            <div id="total"></div>
+        </div>
+    </body>
+</html>
