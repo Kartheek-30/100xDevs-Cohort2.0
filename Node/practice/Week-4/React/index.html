@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title lang="en">To-Do App</title>
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <input type="text" id="title" />
+        <input type="text" id="description" />
+        <!-- <button onclick="addTodo()">Add To-Do</button> -->
+
+        <div id="todos"></div>
+
+        <script>
+            let todoId = 1;
+            function markAsDone(id) {
+                const parent = document.getElementById(id);
+                parent.children[2].innerHTML = "Done!";
+            }
+
+            function createChild(title, description, id) {
+                const child = document.createElement("div");
+                const firstGrandChild = document.createElement("div");
+                firstGrandChild.innerHTML = title;
+                const secondGrandChild = document.createElement("div");
+                secondGrandChild.innerHTML = description;
+                const thirdGrandChild = document.createElement("button");
+                thirdGrandChild.innerHTML="Mark As Done!";
+                thirdGrandChild.setAttribute("onclick", `markAsDone(${id})`);
+                child.appendChild(firstGrandChild);
+                child.appendChild(secondGrandChild);
+                child.appendChild(thirdGrandChild);
+                child.setAttribute("id", id);
+                return child;
+            }
+
+            // function addTodo() {
+            //     const title = document.getElementById("title").value;
+            //     const description = document.getElementById("description").value;
+            //     const parent = document.getElementById("todos");
+
+            //     parent.appendChild(createChild(title, description, todoId++));
+            // }
+            
+            function updateTodoAsPerServer(state) {
+                const parent = document.getElementById("todos");
+                parent.innerHTML="";
+                for(let i = 0; i < state.length; i++){
+                    const child = createChild(state[i].task, state[i].description, state[i].id);
+                    console.log(child);
+                    parent.appendChild(child);
+                }
+            }
+
+            window.setInterval(async function() {
+                const res = await fetch("http://localhost:3000/todos");
+                const ans = await res.json();
+                updateTodoAsPerServer(ans);
+            }, 5000);
+        </script>
+    </body>
+</html>
