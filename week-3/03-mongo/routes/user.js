@@ -46,7 +46,7 @@ router.post('/courses/:courseId', userMiddleware, (req, res) => {
         username: username
     }, {
         "$push": {
-            purchasedCourses: new mongoose.Types.ObjectId(courseId)
+            purchasedCourses: courseId
         }
     }).catch(function (e) {
         console.log(e);
